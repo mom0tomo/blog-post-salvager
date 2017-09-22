@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"net/http/httputil"
 )
 
 // Json to Goを使ってAPIで取得できる情報を構造体に入れる
@@ -33,17 +34,30 @@ type Article struct {
 }
 
 func fetch() ([]Article, error) {
-	// DocBaseのAPIを叩く
-	res, err := http.Get("https://dip-dev.docbase.io/posts/280557")
+	url := "https://dip-dev.docbase.io/posts/289087"
+
+	req, err := http.NewRequest("GET", url, nil)
+	req.Header.Set("X-DocBaseToken", "F-xs-QV5xpekgU5Zu8xj")
+	req.Header.Set("Content-Type", "appliation/json")
 	if err != nil {
 		return nil, err
-	} else if res.StatusCode != 200 {
-		return nil, fmt.Errorf("Unable to get this url : http status %d", res.StatusCode)
 	}
-	defer res.Body.Close()
+	// リクエストヘッダの内容を確認する
+	dump, _ := httputil.DumpRequestOut(req, true)
+	fmt.Printf("%s", dump)
+
+	// DocBaseのAPIを叩く
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	} else if resp.StatusCode != 200 {
+		return nil, fmt.Errorf("Unable to get this url : http status %d", resp.StatusCode)
+	}
+
+	defer resp.Body.Close()
 
 	// JSONを読み込む
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 
 	// JSONを構造体へデコードする
 	var articles []Article
