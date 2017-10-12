@@ -6,8 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"time"
 	"net/http/httputil"
+	"time"
 )
 
 // Json to Goを使ってAPIで取得できる情報を構造体に入れる
@@ -37,7 +37,7 @@ func fetch() ([]Article, error) {
 	url := "https://dip-dev.docbase.io/posts/289087"
 
 	req, err := http.NewRequest("GET", url, nil)
-	req.Header.Set("X-DocBaseToken", "F-xs-QV5xpekgU5Zu8xj")
+	req.Header.Set("X-DocBaseToken", "token")
 	req.Header.Set("Content-Type", "appliation/json")
 	if err != nil {
 		return nil, err
