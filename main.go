@@ -7,7 +7,10 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
+	"os"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 // Json to Goを使ってAPIで取得できる情報を構造体に入れる
@@ -33,18 +36,31 @@ type Article struct {
 	} `json:"user"`
 }
 
+// 環境変数を取得する
+func loadEnv() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+}
+
 func fetch() ([]Article, error) {
-	url := "https://dip-dev.docbase.io/posts/289087"
+	loadEnv()
+
+	url := "https://api.docbase.io/teams/" + os.Getenv("TEAM_DOMAIN") + "/posts?q=author_id:" + os.Getenv("AUTHOR_ID")
 
 	req, err := http.NewRequest("GET", url, nil)
-	req.Header.Set("X-DocBaseToken", "token")
-	req.Header.Set("Content-Type", "appliation/json")
+	req.Header.Set("X-DocBaseToken", os.Getenv("ACCESS_TOKEN"))
+	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		return nil, err
 	}
 	// リクエストヘッダの内容を確認する
-	dump, _ := httputil.DumpRequestOut(req, true)
+	dump, err := httputil.DumpRequestOut(req, true)
 	fmt.Printf("%s", dump)
+	if err != nil {
+		log.Fatal("Error requesting dump")
+	}
 
 	// DocBaseのAPIを叩く
 	resp, err := http.Get(url)
@@ -53,9 +69,6 @@ func fetch() ([]Article, error) {
 	} else if resp.StatusCode != 200 {
 		return nil, fmt.Errorf("Unable to get this url : http status %d", resp.StatusCode)
 	}
-
-	defer resp.Body.Close()
-
 	// JSONを読み込む
 	body, err := ioutil.ReadAll(resp.Body)
 
@@ -72,6 +85,5 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error!: %v", err)
 	}
-	// 記事を表示する
 	fmt.Println(articles)
 }
