@@ -48,7 +48,7 @@ func fetch()([]Article, error) {
 	loadEnv()
 
 	// url := "https://api.docbase.io/teams/" + os.Getenv("TEAM_DOMAIN") + "/posts?q=author_id:" + os.Getenv("AUTHOR_ID")
-	url := "https://api.docbase.io/teams/dip-dev/posts/316251"
+	url := "https://api.docbase.io/teams/" + os.Getenv("TEAM_DOMAIN") + "/posts/316251"
 	req, err := http.NewRequest("GET", url, nil)
 	req.Header.Set("X-DocBaseToken", os.Getenv("ACCESS_TOKEN"))
 	req.Header.Set("Content-Type", "application/json")
