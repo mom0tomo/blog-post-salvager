@@ -8,34 +8,48 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"os"
-	"time"
+	// "time"
 
 	"github.com/joho/godotenv"
 )
 
-// Json to Goを使ってAPIで取得できる情報を構造体に入れる
-type Article struct {
-	ID        int       `json:"id"`
-	Title     string    `json:"title"`
-	Body      string    `json:"body"`
-	Draft     bool      `json:"draft"`
-	URL       string    `json:"url"`
-	CreatedAt time.Time `json:"created_at"`
-	Tags      []struct {
-		Name string `json:"name"`
-	} `json:"tags"`
-	Scope  string `json:"scope"`
-	Groups []struct {
-		ID   int    `json:"id"`
-		Name string `json:"name"`
-	} `json:"groups"`
-	User struct {
-		ID              int    `json:"id"`
-		Name            string `json:"name"`
-		ProfileImageURL string `json:"profile_image_url"`
-	} `json:"user"`
-	Comments []interface{} `json:"comments"`
-}
+// type Article struct {
+//     Posts []struct {
+//         ID        int       `json:"id"`
+//         Title     string    `json:"title"`
+//         Body      string    `json:"body"`
+//         Draft     bool      `json:"draft"`
+//         URL       string    `json:"url"`
+//         CreatedAt time.Time `json:"created_at"`
+//         Scope     string    `json:"scope"`
+//         Tags      []struct {
+//             Name string `json:"name"`
+//         } `json:"tags"`
+//         User struct {
+//             ID              int    `json:"id"`
+//             Name            string `json:"name"`
+//             ProfileImageURL string `json:"profile_image_url"`
+//         } `json:"user"`
+//         Comments []struct {
+//             ID        int       `json:"id"`
+//             Body      string    `json:"body"`
+//             CreatedAt time.Time `json:"created_at"`
+//             User      struct {
+//                 ID              int    `json:"id"`
+//                 Name            string `json:"name"`
+//                 ProfileImageURL string `json:"profile_image_url"`
+//             } `json:"user"`
+//         } `json:"comments"`
+//         Groups []interface{} `json:"groups"`
+//     } `json:"posts"`
+//     Meta struct {
+//         PreviousPage interface{} `json:"previous_page"`
+//         NextPage     string      `json:"next_page"`
+//         Total        int         `json:"total"`
+//     } `json:"meta"`
+// }
+
+var articles interface{}
 
 func loadEnv() {
 	err := godotenv.Load()
@@ -44,11 +58,11 @@ func loadEnv() {
 	}
 }
 
-func fetch()([]Article, error) {
+func fetch()(interface{}, error) {
 	loadEnv()
 
-	// url := "https://api.docbase.io/teams/" + os.Getenv("TEAM_DOMAIN") + "/posts?q=author_id:" + os.Getenv("AUTHOR_ID")
-	url := "https://api.docbase.io/teams/" + os.Getenv("TEAM_DOMAIN") + "/posts/316251"
+	url := "https://api.docbase.io/teams/" + os.Getenv("TEAM_DOMAIN") + "/posts?q=author_id:" + os.Getenv("AUTHOR_ID")
+	// url := "https://api.docbase.io/teams/" + os.Getenv("TEAM_DOMAIN") + "/posts/316251"
 	req, err := http.NewRequest("GET", url, nil)
 	req.Header.Set("X-DocBaseToken", os.Getenv("ACCESS_TOKEN"))
 	req.Header.Set("Content-Type", "application/json")
@@ -76,7 +90,7 @@ func fetch()([]Article, error) {
 	body, err := ioutil.ReadAll(resp.Body)
 
 	// JSONを構造体へデコードする
-	var articles []Article
+	// var articles []Article
 	if err := json.Unmarshal(body, &articles); err != nil {
 		return nil, err
 	}
