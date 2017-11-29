@@ -1,12 +1,11 @@
 package main
 
 import (
-  	"fmt"
-  	"log"
+	"fmt"
+	"log"
 
 	"github.com/joho/godotenv"
 )
-
 
 func init() {
 	_ = godotenv.Load()
@@ -18,5 +17,5 @@ func main() {
 		log.Fatalf("Error!: %v", err)
 	}
 
-  fmt.Println(articles)
+	fmt.Println(articles)
 }
