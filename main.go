@@ -23,12 +23,10 @@ type Article struct {
 		URL       string    `json:"url"`
 		CreatedAt time.Time `json:"created_at"`
 		Scope     string    `json:"scope"`
-		Tags      []struct {
-			Name string `json:"name"`
-		} `json:"tags"`
-		User     interface{} `json:"user"`
-		Comments []interface{} `json:"comments"`
-		Groups   []interface{} `json:"groups"`
+		Tags      interface{} `json:"tags"`
+		User      interface{} `json:"user"`
+		Comments  []interface{} `json:"comments"`
+		Groups    []interface{} `json:"groups"`
 	} `json:"posts"`
 	Meta interface{} `json:"meta"`
 }
@@ -92,8 +90,7 @@ func unmarshalJSON()(Article, error) {
     log.Fatalf("Error!: %v", err)
   }
 
-  err = json.Unmarshal(resBody, &articles)
-  if err != nil {
+  if err := json.Unmarshal(resBody, &articles); err != nil {
     log.Fatalf("Error!: %v", err)
   }
   return articles, err
