@@ -46,7 +46,7 @@ func loadEnv() {
   }
 }
 
-func fetchJson()([]byte, error) {
+func request()(*http.Response, error) {
   loadEnv()
 
   url := "https://api.docbase.io/teams/" + os.Getenv("TEAM_DOMAIN") + "/posts?q=author_id:" + os.Getenv("AUTHOR_ID")
@@ -72,20 +72,26 @@ func fetchJson()([]byte, error) {
   } else if resp.StatusCode != 200 {
     return nil, fmt.Errorf("Unable to get this url : http status %d", resp.StatusCode)
   }
-  defer resp.Body.Close()
 
+  return resp, err
+}
+
+func decode()([]byte, error) {
+  resp, err := request()
   // JSONを読み込む
   resBody, err := ioutil.ReadAll(resp.Body)
   if err != nil {
     return nil, err
   }
-  return resBody, nil
+  defer resp.Body.Close()
+
+  return resBody, err
 }
 
 func unmarshalJSON()(Article, error) {
   var articles Article
 
-  resBody, err := fetchJson()
+  resBody, err := decode()
   if err != nil {
     log.Fatalf("Error!: %v", err)
   }
