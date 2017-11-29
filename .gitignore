@@ -115,3 +115,5 @@ Session.vim
 tags
 
 # End of https://www.gitignore.io/api/go,vim,macos,intellij+all
+.env
+vendor/
