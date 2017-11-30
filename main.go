@@ -18,7 +18,11 @@ func main() {
 		log.Fatalf("Error!: %v", err)
 	}
 
+  // Postsを分解して子項目を表示する
   for _, post := range articles.Posts {
-      fmt.Printf("Title: %v\n", post.Body)
+      // サンプル
+      title := post.Title
+      fmt.Println(title)
   }
+
 }
