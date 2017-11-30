@@ -1,17 +1,15 @@
 package main
 
 import (
-	"reflect"
 	"log"
 	"os"
-	"fmt"
-	"path/filepath"	
 )
 
+var title string
+var body string
+	
 func createFiles(){
-	title := "title"
-	body  := "body"
-	// title, body, err := getContents()
+	title, body, err := getContents()
 	if err != nil {
 		log.Fatalf("Error!: %v", err)
 	}
@@ -34,12 +32,9 @@ func getContents()(string, string, error) {
 		log.Fatalf("Error!: %v", err)
 	}
 
-	// articles構造体の中のpost構造体のtitle/bodyフィールドを取得する
-	t := reflect.ValueOf(articles)
-	p := reflect.ValueOf(t.Field(0))
-	title := p.Field(1).Name
-	// body  := p.Field(2).Name
-	fmt.Println(title)
-	return title, body, err
-	// return title, body, err
+	for _, post := range articles.Posts {
+	    title = post.Title
+	    body  = post.Body
+    }
+    return title, body, err
 }
