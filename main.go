@@ -1,8 +1,9 @@
 package main
 
 import (
-	"fmt"
+
 	"log"
+  "fmt"
 
 	"github.com/joho/godotenv"
 )
@@ -12,10 +13,12 @@ func init() {
 }
 
 func main() {
-	articles, err := encodeJSONToGo()
+	_, err := encodeJSONToGo()
 	if err != nil {
 		log.Fatalf("Error!: %v", err)
 	}
 
-	fmt.Println(articles)
+  for _, post := range articles.Posts {
+      fmt.Printf("Title: %v\n", post.Body)
+  }
 }
