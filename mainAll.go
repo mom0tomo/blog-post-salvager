@@ -11,7 +11,6 @@ import (
   "bufio"
   "strings"
   "time"
-  "strconv"
 
 	"github.com/joho/godotenv"
 )
@@ -59,24 +58,82 @@ func getError(err error) {
 
 
 func main() {
-  for pageNo := 1; pageNo < 10; pageNo++ {
-    // URLの生成
-    url := "https://api.docbase.io/teams/" + os.Getenv("TEAM_DOMAIN") + "/posts?page=" + strconv.Itoa(pageNo) + "&q=author_id:" + os.Getenv("AUTHOR_ID")
+  var url string
+  // URLの生成
+  url = "https://api.docbase.io/teams/" + os.Getenv("TEAM_DOMAIN") + "/posts?&q=author_id:" + os.Getenv("AUTHOR_ID")
 
-    // リクエストの生成
+  // リクエストの生成
+  req, err := http.NewRequest("GET", url, nil)
+  if err != nil {
+    getError(err)
+  }
+  req.Header.Set("X-DocBaseToken", os.Getenv("ACCESS_TOKEN"))
+  req.Header.Set("Content-Type", "application/json")
+
+  // リクエストヘッダを確認する
+  dump, err := httputil.DumpRequestOut(req, true)
+  fmt.Printf("%s", dump)
+  if err != nil {
+    log.Fatal("Error requesting dump")
+  }
+
+  // 疎通確認をしリクエストを受け取る
+  res, err := http.DefaultClient.Do(req)
+  if err != nil {
+    getError(err)
+  } else if res.StatusCode != 200 {
+    getError(fmt.Errorf("Unable to get this url : http status %d", res.StatusCode))
+  }
+
+  // バイトデータとして読み込む
+  byteArray, err := ioutil.ReadAll(res.Body)
+  if err != nil {
+    getError(err)
+  }
+  defer res.Body.Close()
+
+  // Jsonの形を構造体へ突っ込む
+  if err := json.Unmarshal(byteArray, &articles); err != nil {
+    getError(err)
+  }
+
+  // Articleの子であるPostsを親にしそれぞれのデータを取得できる状態にする。(PHPオブジェクトと同じ)
+  for _, post := range articles.Posts {
+    title := strings.Replace(post.Title, "/", "-", -1)
+    body  := post.Body
+    func() {
+        file, err := os.OpenFile("./md/"+title+".md", os.O_WRONLY|os.O_CREATE, 0666)
+        if err != nil {
+          getError(err)
+        }
+        defer file.Close()
+        writer := bufio.NewWriter(file)
+        bw := bufio.NewWriter(writer)
+        bw.WriteString(body)
+        bw.Flush()
+    }()
+    fmt.Println(title)
+  }
+
+  // Meta情報。　ここが欲しかっただけ
+  url = articles.Meta.NextPage
+  total := articles.Meta.Total
+  cntLoop := (total/20)
+  if total % 20 >= 1 {
+    cntLoop += 1
+  }
+
+
+  // ループに必要な材料は揃ったので-----------Loop Time
+  for i := 0; i < cntLoop; i++ {
+
+    // next_pageを元URLとして扱うことにする
     req, err := http.NewRequest("GET", url, nil)
     if err != nil {
       getError(err)
     }
     req.Header.Set("X-DocBaseToken", os.Getenv("ACCESS_TOKEN"))
     req.Header.Set("Content-Type", "application/json")
-
-    // リクエストヘッダを確認する
-    dump, err := httputil.DumpRequestOut(req, true)
-    fmt.Printf("%s", dump)
-    if err != nil {
-      log.Fatal("Error requesting dump")
-    }
 
     // 疎通確認をしリクエストを受け取る
     res, err := http.DefaultClient.Do(req)
@@ -113,7 +170,9 @@ func main() {
           bw.WriteString(body)
           bw.Flush()
       }()
+      fmt.Println(title)
     }
-    fmt.Println("終了")
+    // next_pageを取り続ける
+    url = articles.Meta.NextPage
   }
 }
