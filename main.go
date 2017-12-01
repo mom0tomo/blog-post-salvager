@@ -16,8 +16,8 @@ func main() {
 		log.Fatalf("Error!: %v", err)
 	}
 
-  err = markdown(articles)
-  if err != nil {
-    log.Fatalf("Error!: %v", err)
-  }
+	err = markdown(articles)
+	if err != nil {
+		log.Fatalf("Error!: %v", err)
+	}
 }
