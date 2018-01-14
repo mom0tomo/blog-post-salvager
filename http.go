@@ -9,7 +9,12 @@ import (
 )
 
 func newRequest() (*http.Request, error) {
-	url := "https://api.docbase.io/teams/" + os.Getenv("TEAM_DOMAIN") + "/posts?q=author_id:" + os.Getenv("AUTHOR_ID")
+
+	team_domain := os.Getenv("TEAM_DOMAIN")
+	pages := os.Getenv("PAGES")
+	author_id := os.Getenv("AUTHOR_ID")
+
+	url := "https://api.docbase.io/teams/" + team_domain + "/posts?page=" + pages + "&per_page=20&q=author_id:" + author_id
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

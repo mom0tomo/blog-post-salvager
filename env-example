@@ -1,3 +1,16 @@
+# Please get access token from your team's settings.
 ACCESS_TOKEN=
+
+# Example https://{TEAM_DOMAIN}.docbase.io/
 TEAM_DOMAIN=
+
+# Your AUTHOR ID.
 AUTHOR_ID=
+
+# Save location.
+SAVE_DIR=
+
+# docbase api get limit 20 items. 1hour limit 30 items.
+# [pages = 1] -> 1~19 items. [pages = 2] -> 20~39 items.
+# get for descending order.
+PAGES=
