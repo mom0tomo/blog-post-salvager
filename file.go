@@ -7,7 +7,7 @@ import (
 
 var title string
 var body string
-	
+
 func createFiles(){
 	title, body, err := getContents()
 	if err != nil {
@@ -22,7 +22,7 @@ func createFiles(){
 	defer file.Close()
 
 	file.Write(([]byte)(body))
-	
+
 	return
 }
 
@@ -33,8 +33,8 @@ func getContents()(string, string, error) {
 	}
 
 	for _, post := range articles.Posts {
-	    title = post.Title
-	    body  = post.Body
-    }
-    return title, body, err
+		title = post.Title
+		body  = post.Body
+	}
+	return title, body, err
 }

@@ -25,15 +25,15 @@ func markdown(articles Article) (error) {
 		title := strings.Replace(post.Title, "/", "-", -1)
 		body  := post.Body
 		func() {
-				file, err := createFile(title)
-				if err != nil {
-					log.Fatalf("Error!: %v", err)
-				}
-				defer closeFile(file)
-				writer := bufio.NewWriter(file)
-				bw := bufio.NewWriter(writer)
-				bw.WriteString(body)
-				bw.Flush()
+			file, err := createFile(title)
+			if err != nil {
+				log.Fatalf("Error!: %v", err)
+			}
+			defer closeFile(file)
+			writer := bufio.NewWriter(file)
+			bw := bufio.NewWriter(writer)
+			bw.WriteString(body)
+			bw.Flush()
 		}()
 		fmt.Println(title + ".md")
 	}
