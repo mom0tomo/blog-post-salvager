@@ -1,3 +1,11 @@
+# Please get access token from your team's settings.
 ACCESS_TOKEN=
+
+# Example https://{TEAM_DOMAIN}.docbase.io/
 TEAM_DOMAIN=
+
+# Your AUTHOR ID.
 AUTHOR_ID=
+
+# Save location.
+SAVE_DIR=
