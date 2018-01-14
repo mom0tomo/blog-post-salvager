@@ -13,8 +13,7 @@ func closeFile(file *os.File) {
 }
 
 func createFile(title string) (*os.File, error) {
-  // [WIP]./md/はディレクトリを入力させるか、envで指定してあげると良さそう
-	file, err := os.OpenFile("./md/"+title+".md", os.O_WRONLY|os.O_CREATE, 0666)
+	file, err := os.OpenFile(os.Getenv("SAVE_DIR") + title + ".md", os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
 		return nil, err
 	}
@@ -22,8 +21,6 @@ func createFile(title string) (*os.File, error) {
 }
 
 func markdown(articles Article) (error) {
-
-
 	for _, post := range articles.Posts {
 		title := strings.Replace(post.Title, "/", "-", -1)
 		body  := post.Body
@@ -38,6 +35,7 @@ func markdown(articles Article) (error) {
 				bw.WriteString(body)
 				bw.Flush()
 		}()
+		fmt.Println(title + ".md")
 	}
 	fmt.Println("終了")
 	return nil
