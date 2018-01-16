@@ -2,9 +2,9 @@ package main
 
 import (
 	"bufio"
-	"os"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -13,17 +13,17 @@ func closeFile(file *os.File) {
 }
 
 func createFile(title string) (*os.File, error) {
-	file, err := os.OpenFile(os.Getenv("SAVE_DIR") + title + ".md", os.O_WRONLY|os.O_CREATE, 0666)
+	file, err := os.OpenFile(os.Getenv("SAVE_DIR")+title+".md", os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
 		return nil, err
 	}
 	return file, nil
 }
 
-func markdown(articles Article) (error) {
+func markdown(articles Article) error {
 	for _, post := range articles.Posts {
 		title := strings.Replace(post.Title, "/", "-", -1)
-		body  := post.Body
+		body := post.Body
 		func() {
 			file, err := createFile(title)
 			if err != nil {
