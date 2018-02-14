@@ -10,6 +10,7 @@ import (
 	"net/http/httputil"
 	"os"
 	"strings"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
@@ -25,13 +26,16 @@ func closeFile(file *os.File) {
 }
 
 func main() {
-	requestLimit := 300
 	team_domain := os.Getenv("TEAM_DOMAIN")
 	author_id := os.Getenv("AUTHOR_ID")
 	save_dir := os.Getenv("SAVE_DIR")
 
-	for reqCnt := 1; reqCnt < requestLimit; reqCnt++ {
-		url := "https://api.docbase.io/teams/" + team_domain + "/posts?page=" + reqCnt + "&per_page=20&q=author_id:" + author_id
+	requestLimit := 300
+
+	for requestCnt := 1; requestCnt < requestLimit; requestCnt++ {
+		pages := strconv.Itoa(requestCnt)
+
+		url := "https://api.docbase.io/teams/" + team_domain + "/posts?page=" + pages + "&per_page=20&q=author_id:" + author_id
 
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
