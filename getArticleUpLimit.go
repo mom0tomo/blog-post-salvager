@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/http/httputil"
 	"os"
 	"strings"
 	"strconv"
@@ -46,10 +45,11 @@ func main() {
 		req.Header.Set("Content-Type", "application/json")
 
 		// リクエストヘッダを確認する
-		dump, err := httputil.DumpRequestOut(req, true)
-		if err != nil {
-			log.Fatalf("Error!: %v", err)
-		}
+		// dump, err := httputil.DumpRequestOut(req, true)
+		// if err != nil {
+		// 	log.Fatalf("Error!: %v", err)
+		// }
+		// fmt.Printf("%s", dump)
 
 		resp, err := http.DefaultClient.Do(req)
 		if err != nil {
