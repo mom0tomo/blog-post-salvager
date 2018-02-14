@@ -47,7 +47,6 @@ func main() {
 
 		// リクエストヘッダを確認する
 		dump, err := httputil.DumpRequestOut(req, true)
-		fmt.Printf("%s", dump)
 		if err != nil {
 			log.Fatalf("Error!: %v", err)
 		}
