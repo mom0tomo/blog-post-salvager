@@ -36,6 +36,7 @@ SAVE_DIR=
 
 # docbase api get limit 20 items. 1hour limit 30 items.
 # [pages = 1] -> 1~19 items. [pages = 2] -> 20~39 items.
+# [pages = 0] All Articles
 # get for descending order.
 PAGES=
 ```
@@ -43,11 +44,11 @@ PAGES=
 ## go run
 
 ```
-$ go run getArticletoMarkdown.go struct.go
+$ go run docbase.go struct.go
 
 or 
 
-$ go build getArticletoMarkdown.go struct.go
-$ go run getArticletoMarkdown
+$ go build docbase.go struct.go
+$ go run docbase
 ```
 

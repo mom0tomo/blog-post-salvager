@@ -1,13 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
-
+	"strings"
 
 	"github.com/joho/godotenv"
 )
@@ -19,20 +20,34 @@ func init() {
 }
 
 func main() {
-	// firstAction 
+	if os.Getenv("PAGES") == "0" {
+		getUPLimit()
+	} else {
+		getSpecify()
+	}
+}
+
+func getSpecify() {
 	url := "https://api.docbase.io/teams/" + os.Getenv("TEAM_DOMAIN") + "/posts?page=" + os.Getenv("PAGES") + "&per_page=20&q=author_id:" + os.Getenv("AUTHOR_ID")
+	getArticle(url)
+}
+
+func getUPLimit() {
+	url := "https://api.docbase.io/teams/" + os.Getenv("TEAM_DOMAIN") + "/posts?page=1&per_page=20&q=author_id:" + os.Getenv("AUTHOR_ID")
+	getArticle(url)
+
+	for articles.Meta.NextPage != url {
+		url = articles.Meta.NextPage
+		getArticle(url)
+	}
+}
+
+func getArticle(url string) {
 	req := newRequest(url)
 	resp := getResponse(req)
 	jsonToStruct(resp)
-
-	for articles.Meta.NextPage != "" {
-		url = articles.Meta.NextPage
-		req = newRequest(url)
-		resp = getResponse(req)
-		jsonToStruct(resp)
-		fmt.Println(url)
-	}
-	
+	fmt.Println(url)
+	createMarkdown()
 }
 
 func newRequest(url string) *http.Request {
@@ -69,27 +84,26 @@ func jsonToStruct(resp *http.Response) {
 	return
 }
 
-// func closeFile(file *os.File) {
-// 	file.Close()
-// }
+func closeFile(file *os.File) {
+	file.Close()
+}
 
-// 
-// func createMarkdown() {
-// 	for _, post := range articles.Posts {
-// 		title := strings.Replace(post.Title, "/", "-", -1)
-// 		body := post.Body
-// 		func() {
-// 			file, err := os.OpenFile(os.Getenv("SAVE_DIR")+title+".md", os.O_WRONLY|os.O_CREATE, 0666)
-// 			if err != nil {
-// 				log.Fatalf("Error!: %v", err)
-// 			}
-// 			defer closeFile(file)
-// 			writer := bufio.NewWriter(file)
-// 			bw := bufio.NewWriter(writer)
-// 			bw.WriteString(body)
-// 			bw.Flush()
-// 		}()
-// 		fmt.Println(title + ".md")
-// 	}
-// 	fmt.Println("終了：" + os.Getenv("SAVE_DIR") + "に保存されました")
-// }
+func createMarkdown() {
+	for _, post := range articles.Posts {
+		title := strings.Replace(post.Title, "/", "-", -1)
+		body := post.Body
+		func() {
+			file, err := os.OpenFile(os.Getenv("SAVE_DIR")+title+".md", os.O_WRONLY|os.O_CREATE, 0666)
+			if err != nil {
+				log.Fatalf("Error!: %v", err)
+			}
+			defer closeFile(file)
+			writer := bufio.NewWriter(file)
+			bw := bufio.NewWriter(writer)
+			bw.WriteString(body)
+			bw.Flush()
+		}()
+		fmt.Println(title + ".md")
+	}
+	fmt.Println("終了：" + os.Getenv("SAVE_DIR") + "に保存されました")
+}

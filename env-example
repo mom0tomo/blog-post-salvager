@@ -12,5 +12,6 @@ SAVE_DIR=
 
 # docbase api get limit 20 items. 1hour limit 30 items.
 # [pages = 1] -> 1~19 items. [pages = 2] -> 20~39 items.
+# [pages = 0] All Articles
 # get for descending order.
 PAGES=
