@@ -33,7 +33,6 @@ func main() {
 		fmt.Println(url)
 	}
 	
-
 }
 
 func newRequest(url string) *http.Request {
