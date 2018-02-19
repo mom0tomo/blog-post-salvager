@@ -19,17 +19,21 @@ func init() {
 }
 
 func main() {
+	// firstAction 
 	url := "https://api.docbase.io/teams/" + os.Getenv("TEAM_DOMAIN") + "/posts?page=" + os.Getenv("PAGES") + "&per_page=20&q=author_id:" + os.Getenv("AUTHOR_ID")
 	req := newRequest(url)
 	resp := getResponse(req)
 	jsonToStruct(resp)
-	fmt.Println(url)
+
+	for articles.Meta.NextPage != "" {
+		url = articles.Meta.NextPage
+		req = newRequest(url)
+		resp = getResponse(req)
+		jsonToStruct(resp)
+		fmt.Println(url)
+	}
 	
-	url = articles.Meta.NextPage
-	req = newRequest(url)
-	resp = getResponse(req)
-	jsonToStruct(resp)
-	fmt.Println(url)
+
 }
 
 func newRequest(url string) *http.Request {
