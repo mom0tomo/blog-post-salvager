@@ -49,6 +49,6 @@ $ go run docbase.go struct.go
 or 
 
 $ go build docbase.go struct.go
-$ go run docbase
+$ ./docbase
 ```
 
